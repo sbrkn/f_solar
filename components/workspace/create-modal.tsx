@@ -3,7 +3,7 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
-import { documentSchema, DocumentInput, projectSchema, ProjectInput } from '@/lib/utils/validation';
+import { documentSchema, projectSchema } from '@/lib/utils/validation';
 import { createDocument, createProject } from '@/services/firestore.service';
 import { useAuth } from '@/lib/hooks/useAuth';
 import { Button } from '@/components/ui/button';
@@ -37,7 +37,6 @@ export function CreateModal({
   const router = useRouter();
 
   const schema = type === 'document' ? documentSchema : projectSchema;
-  type FormInput = typeof type extends 'document' ? DocumentInput : ProjectInput;
 
   const {
     register,
