@@ -27,7 +27,8 @@ export async function POST(request: NextRequest) {
 
     return response;
   } catch (error) {
-    console.error('Login error:', error);
+    const code = (error as { code?: string })?.code ?? 'unknown';
+    console.error('Login error code:', code);
     return NextResponse.json(
       { error: 'Invalid email or password' },
       { status: 401 }

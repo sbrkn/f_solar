@@ -49,7 +49,6 @@ export default function DocumentEditor({ documentId }: DocumentEditorProps) {
   }, [updateContent, user]);
 
   const applyFormat = (command: string, value?: string) => {
-    document?.title; // keep reference alive
     contentRef.current?.focus();
     window.document.execCommand(command, false, value);
   };

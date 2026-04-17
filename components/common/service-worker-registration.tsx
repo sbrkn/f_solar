@@ -9,10 +9,12 @@ export default function ServiceWorkerRegistration() {
         navigator.serviceWorker
           .register('/service-worker.js')
           .then((registration) => {
-            console.warn('Service Worker registered:', registration.scope);
+            if (process.env.NODE_ENV === 'development') {
+              console.log('Service Worker registered:', registration.scope);
+            }
           })
           .catch((err) => {
-            console.warn('Service Worker registration failed:', err);
+            console.error('Service Worker registration failed:', err);
           });
       });
     }

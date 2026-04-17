@@ -8,7 +8,7 @@ export default function ProjectsPage() {
     <div className="flex flex-1 flex-col gap-6 p-6">
       <div>
         <h1 className="text-2xl font-bold">Projects</h1>
-        <p className="text-muted-foreground">Organise documents into projects</p>
+        <p className="text-muted-foreground">Organize documents into projects</p>
       </div>
       <ProjectList />
     </div>

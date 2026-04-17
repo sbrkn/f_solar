@@ -1,5 +1,5 @@
 export const GOOGLE_DRIVE_CONFIG = {
-  clientId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID ?? '',
+  clientId: process.env.GOOGLE_CLIENT_ID ?? '',
   scopes: [
     'https://www.googleapis.com/auth/drive',
     'https://www.googleapis.com/auth/drive.file',
