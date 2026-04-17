@@ -5,10 +5,11 @@ export const metadata: Metadata = {
   title: 'Document - F-Solar Workspace',
 };
 
-export default function DocumentPage({
+export default async function DocumentPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
-  return <DocumentEditor documentId={params.id} />;
+  const { id } = await params;
+  return <DocumentEditor documentId={id} />;
 }

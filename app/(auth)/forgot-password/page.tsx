@@ -21,6 +21,8 @@ const schema = z.object({
   email: z.string().email('Invalid email address'),
 });
 
+type ForgotPasswordInput = z.infer<typeof schema>;
+
 export default function ForgotPasswordPage() {
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
@@ -29,9 +31,9 @@ export default function ForgotPasswordPage() {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm({ resolver: zodResolver(schema) });
+  } = useForm<ForgotPasswordInput>({ resolver: zodResolver(schema) });
 
-  const onSubmit = async (data: { email: string }) => {
+  const onSubmit = async (data: ForgotPasswordInput) => {
     try {
       setError('');
       await resetPassword(data.email);
@@ -78,7 +80,7 @@ export default function ForgotPasswordPage() {
               />
               {errors.email && (
                 <p className="mt-1 text-sm text-destructive">
-                  {errors.email.message}
+                  {String(errors.email.message)}
                 </p>
               )}
             </div>

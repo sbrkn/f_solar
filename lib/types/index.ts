@@ -124,7 +124,7 @@ export interface DriveFile {
   id: string;
   name: string;
   mimeType: string;
-  size: number;
+  size: string | null;
   webViewLink: string;
   thumbnailLink?: string;
   createdTime: string;

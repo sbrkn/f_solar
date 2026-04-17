@@ -19,7 +19,7 @@ export async function listFiles(
     orderBy: 'modifiedTime desc',
   });
 
-  return (response.data.files as DriveFile[]) || [];
+  return (response.data.files as unknown as DriveFile[]) || [];
 }
 
 export async function uploadFile(
@@ -46,7 +46,7 @@ export async function uploadFile(
     fields: 'id,name,mimeType,size,webViewLink,createdTime,modifiedTime',
   });
 
-  return response.data as DriveFile;
+  return response.data as unknown as DriveFile;
 }
 
 export async function downloadFile(
@@ -81,7 +81,7 @@ export async function updateFile(
     fields: 'id,name,mimeType,size,webViewLink,modifiedTime',
   });
 
-  return response.data as DriveFile;
+  return response.data as unknown as DriveFile;
 }
 
 export async function deleteFile(
@@ -110,7 +110,7 @@ export async function createFolder(
     fields: 'id,name,mimeType,createdTime',
   });
 
-  return response.data as DriveFile;
+  return response.data as unknown as DriveFile;
 }
 
 export async function findOrCreateBackupFolder(
