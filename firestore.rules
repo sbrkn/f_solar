@@ -1,0 +1,65 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ─── Helper functions ──────────────────────────────────────────────────────
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function workspaceMember(workspaceId) {
+      return get(/databases/$(database)/documents/workspaces/$(workspaceId)/members/$(request.auth.uid));
+    }
+
+    function hasWorkspaceRole(workspaceId, role) {
+      let member = workspaceMember(workspaceId);
+      return member.exists &&
+             roleRank(member.data.role) >= roleRank(role);
+    }
+
+    // Encode role hierarchy: owner ≥ editor ≥ viewer
+    function roleRank(role) {
+      return role == 'owner'  ? 3
+           : role == 'editor' ? 2
+           : role == 'viewer' ? 1
+           : 0;
+    }
+
+    // ─── Workspaces ────────────────────────────────────────────────────────────
+
+    match /workspaces/{workspaceId} {
+      allow read: if isSignedIn() && hasWorkspaceRole(workspaceId, 'viewer');
+      allow create: if isSignedIn();
+      allow update, delete: if isSignedIn() && hasWorkspaceRole(workspaceId, 'owner');
+
+      match /members/{uid} {
+        allow read: if isSignedIn() && hasWorkspaceRole(workspaceId, 'viewer');
+        // Only workspace owners may manage membership
+        allow write: if isSignedIn() && hasWorkspaceRole(workspaceId, 'owner');
+      }
+    }
+
+    // ─── Documents ─────────────────────────────────────────────────────────────
+
+    match /documents/{documentId} {
+      function docWorkspaceId() {
+        return resource.data.workspaceId;
+      }
+
+      allow read:
+        if isSignedIn() && hasWorkspaceRole(docWorkspaceId(), 'viewer');
+
+      allow create:
+        if isSignedIn()
+           && request.resource.data.workspaceId is string
+           && hasWorkspaceRole(request.resource.data.workspaceId, 'editor');
+
+      allow update:
+        if isSignedIn() && hasWorkspaceRole(docWorkspaceId(), 'editor');
+
+      allow delete:
+        if isSignedIn() && hasWorkspaceRole(docWorkspaceId(), 'owner');
+    }
+  }
+}
