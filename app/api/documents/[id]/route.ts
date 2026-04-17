@@ -16,12 +16,13 @@ async function getUserId(request: NextRequest): Promise<string | null> {
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   const uid = await getUserId(request);
   if (!uid) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-  const document = await firestoreService.getDocument(params.id);
+  const { id } = await params;
+  const document = await firestoreService.getDocument(id);
   if (!document) return NextResponse.json({ error: 'Not found' }, { status: 404 });
 
   return NextResponse.json({ document });
@@ -29,23 +30,25 @@ export async function GET(
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   const uid = await getUserId(request);
   if (!uid) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
+  const { id } = await params;
   const body = await request.json();
-  await firestoreService.updateDocument(params.id, body, uid);
+  await firestoreService.updateDocument(id, body, uid);
   return NextResponse.json({ message: 'Updated' });
 }
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   const uid = await getUserId(request);
   if (!uid) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-  await firestoreService.deleteDocument(params.id);
+  const { id } = await params;
+  await firestoreService.deleteDocument(id);
   return NextResponse.json({ message: 'Deleted' });
 }

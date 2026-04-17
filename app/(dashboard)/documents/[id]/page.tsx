@@ -3,6 +3,11 @@ import DocumentEditor from '@/components/editor/document-editor';
 
 export const metadata: Metadata = { title: 'Edit Document' };
 
-export default function DocumentDetailPage({ params }: { params: { id: string } }) {
-  return <DocumentEditor documentId={params.id} />;
+export default async function DocumentDetailPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
+  return <DocumentEditor documentId={id} />;
 }
