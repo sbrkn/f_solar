@@ -1,33 +1,52 @@
-# f_solar Project Overview
+# Next.js + Firebase + Google Drive PWA Starter
 
-f_solar is a solar panel optimization project aimed at maximizing the efficiency and performance of solar energy systems. This repository contains implementation details, optimizations, and performance benchmarks relevant to solar technology.
+Bu repo, AppFlowy benzeri bir collaboration workspace için hızlı başlangıç şablonudur.
 
-## Workflow Standards
-- **Branching:**  Use feature branches for new features or fixes. Keep the main branch stable.
-- **Commits:**  Commit messages should be clear and descriptive, following the format: `type(scope): subject`. Example: `feat(panel): add optimization algorithm`
-- **Pull Requests:**  All code changes should be submitted via pull requests. Ensure proper code review before merging into the main branch.
+## Dahil Olan Yapı
 
-## Quick Start Guide
-1. **Clone the Repository**
-   ```bash
-   git clone https://github.com/sbrkn/f_solar.git
-   cd f_solar
-   ```
-2. **Install Dependencies**
-   Follow the installation instructions provided in the project documentation or dependency management tool used.
-3. **Run the Project**
-   Execute the main application using the command:
-   ```bash
-   <run_command>
-   ```
-4. **Test the Project**
-   To verify the implementations, run:
-   ```bash
-   <test_command>
-   ```
+- Next.js App Router (TypeScript strict)
+- Tailwind CSS + Shadcn tarzı temel UI bileşenleri
+- Firebase istemci kurulumu (Auth, Firestore, Storage)
+- Google Drive OAuth başlangıç servisi
+- Doküman CRUD API iskeleti
+- PWA manifest + service worker
 
-## Documentation
-For detailed documentation, please visit [Documentation Link](URL_TO_DOCUMENTATION).
+## Klasör Yapısı
 
----
-This README file provides a comprehensive overview, ensuring clarity and conciseness for users visiting the repository.
+```text
+src/
+  app/
+    (auth)/login
+    (auth)/signup
+    (dashboard)/dashboard
+    api/documents
+    api/sync
+  components/
+    ui/
+    workspace/
+  lib/
+    firebase/
+    google-drive/
+    hooks/
+  services/
+public/
+```
+
+## Başlatma
+
+```bash
+npm install
+npm run dev
+```
+
+## Environment
+
+`.env.example` dosyasını `.env.local` olarak kopyalayın ve Firebase + Google Drive değerlerini ekleyin.
+
+## Yol Haritası (Önerilen)
+
+1. Firestore security rules
+2. Role-based workspace permissions
+3. Rich text editor + cross-linking
+4. Background sync queue (IndexedDB)
+5. Web Push notifications
