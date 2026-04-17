@@ -44,7 +44,7 @@ async function verifyFirebaseToken(token: string): Promise<JWTPayload | null> {
 
 function isPublicPath(pathname: string): boolean {
   return PUBLIC_PATHS.some(
-    (pub) => pathname === pub || pathname.startsWith(pub + "/") || pathname.startsWith(pub + "?")
+    (pub) => pathname === pub || pathname.startsWith(pub + "/")
   );
 }
 

@@ -81,14 +81,14 @@ export async function requireDocumentAccess(
   documentId: string,
   requiredRole: "viewer" | "editor" | "owner" = "viewer"
 ) {
-  const docRef = await getAdminDb().collection("documents").doc(documentId).get();
+  const docSnap = await getAdminDb().collection("documents").doc(documentId).get();
 
   // Return 403 regardless of whether the document exists to avoid leaking existence.
-  if (!docRef.exists) {
+  if (!docSnap.exists) {
     throw NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
-  const data = docRef.data();
+  const data = docSnap.data();
   const workspaceId: string | undefined = data?.workspaceId;
 
   if (!workspaceId) {

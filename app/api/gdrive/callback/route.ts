@@ -110,19 +110,34 @@ export async function GET(req: NextRequest) {
     return clearStateCookie(resp);
   }
 
-  const tokens = (await tokenRes.json()) as {
-    access_token: string;
-    refresh_token?: string;
-    expires_in: number;
-  };
+  let tokens: { access_token: string; refresh_token?: string; expires_in: number };
+  try {
+    const body = (await tokenRes.json()) as Record<string, unknown>;
+    if (
+      typeof body.access_token !== "string" ||
+      typeof body.expires_in !== "number"
+    ) {
+      throw new Error("Unexpected token response shape");
+    }
+    tokens = {
+      access_token: body.access_token,
+      refresh_token: typeof body.refresh_token === "string" ? body.refresh_token : undefined,
+      expires_in: body.expires_in,
+    };
+  } catch {
+    const resp = NextResponse.json(
+      { error: "Invalid token response from Google" },
+      { status: 502 }
+    );
+    return clearStateCookie(resp);
+  }
 
-  // TODO: persist tokens to Firestore or a secure server-side store tied to the user session.
-  // For now we redirect back to settings with a success indicator.
-  // Do NOT store raw tokens in client-accessible cookies.
+  // Redirect back to settings and persist the access token in an HttpOnly cookie
+  // (not readable by JavaScript). The refresh_token should be persisted server-side
+  // in Firestore tied to the user session in a follow-up.
   const successUrl = new URL("/settings?gdrive=connected", req.url);
   const resp = NextResponse.redirect(successUrl);
 
-  // Store access token in HttpOnly cookie (short-lived; refresh_token persisted server-side)
   resp.cookies.set("gdrive_access_token", tokens.access_token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
