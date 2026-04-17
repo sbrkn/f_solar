@@ -4,7 +4,6 @@ import {
   createDocument,
 } from '@/services/firestore.service';
 import { documentSchema } from '@/lib/utils/validation';
-import { v4 as uuidv4 } from 'uuid';
 
 export async function GET(request: NextRequest) {
   try {

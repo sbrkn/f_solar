@@ -4,7 +4,7 @@ A production-ready **Next.js + Firebase + Google Drive PWA** collaborative works
 
 ## Tech Stack
 
-- **Framework**: Next.js 14+ with App Router
+- **Framework**: Next.js 15+ with App Router
 - **Language**: TypeScript (strict mode)
 - **Styling**: Tailwind CSS + Shadcn UI
 - **Database**: Firebase Firestore (real-time)

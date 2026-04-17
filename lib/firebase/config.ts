@@ -3,6 +3,20 @@ import { getAuth, type Auth } from 'firebase/auth';
 import { getFirestore, type Firestore } from 'firebase/firestore';
 import { getStorage, type FirebaseStorage } from 'firebase/storage';
 
+// During build, environment variables may not be set.
+// Placeholder values are used so the build succeeds without credentials.
+// At runtime, these must be replaced with real values in .env.local.
+const isConfigured =
+  !!process.env.NEXT_PUBLIC_FIREBASE_API_KEY &&
+  process.env.NEXT_PUBLIC_FIREBASE_API_KEY !== 'build-placeholder';
+
+if (typeof window !== 'undefined' && !isConfigured) {
+  console.warn(
+    '[Firebase] No API key detected. Please configure your .env.local file. ' +
+      'See SETUP_GUIDE.md for instructions.'
+  );
+}
+
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY || 'build-placeholder',
   authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN || 'build-placeholder.firebaseapp.com',

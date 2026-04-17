@@ -1,4 +1,3 @@
-import { db } from '@/lib/firebase/config';
 import {
   signInWithEmail,
   signUpWithEmail,
