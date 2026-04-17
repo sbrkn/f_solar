@@ -3,6 +3,12 @@ import { NextRequest, NextResponse } from "next/server";
 
 const GDRIVE_OAUTH_STATE_COOKIE = "gdrive_oauth_state";
 
+interface GoogleTokenResponse {
+  accessToken: string;
+  refreshToken?: string;
+  expiresIn: number;
+}
+
 /**
  * Compares two strings in constant time to prevent timing attacks.
  */
@@ -110,7 +116,7 @@ export async function GET(req: NextRequest) {
     return clearStateCookie(resp);
   }
 
-  let tokens: { access_token: string; refresh_token?: string; expires_in: number };
+  let tokens: GoogleTokenResponse;
   try {
     const body = (await tokenRes.json()) as Record<string, unknown>;
     if (
@@ -120,9 +126,9 @@ export async function GET(req: NextRequest) {
       throw new Error("Unexpected token response shape");
     }
     tokens = {
-      access_token: body.access_token,
-      refresh_token: typeof body.refresh_token === "string" ? body.refresh_token : undefined,
-      expires_in: body.expires_in,
+      accessToken: body.access_token,
+      refreshToken: typeof body.refresh_token === "string" ? body.refresh_token : undefined,
+      expiresIn: body.expires_in,
     };
   } catch {
     const resp = NextResponse.json(
@@ -133,16 +139,16 @@ export async function GET(req: NextRequest) {
   }
 
   // Redirect back to settings and persist the access token in an HttpOnly cookie
-  // (not readable by JavaScript). The refresh_token should be persisted server-side
+  // (not readable by JavaScript). The refreshToken should be persisted server-side
   // in Firestore tied to the user session in a follow-up.
   const successUrl = new URL("/settings?gdrive=connected", req.url);
   const resp = NextResponse.redirect(successUrl);
 
-  resp.cookies.set("gdrive_access_token", tokens.access_token, {
+  resp.cookies.set("gdrive_access_token", tokens.accessToken, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "lax",
-    maxAge: tokens.expires_in,
+    maxAge: tokens.expiresIn,
     path: "/",
   });
 
